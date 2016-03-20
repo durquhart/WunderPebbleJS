@@ -2,22 +2,24 @@
  * WunderPebble
  * By: Jahdai Cintron
  * http://jahdaicintron.com/wunderpebble
+ * Voice-add support by Daniel Urquhart. Original License Unclear, my changes available under LGPL v3
  */
 // DEBUGGING
-var DEBUG = false;
-var VERSION = 1.2;
+var DEBUG = true;
+var VERSION = 1.3;
 
 // INCLUDES
 var UI       = require( "ui" );
 var ajax     = require( "ajax" );
 var Settings = require( "settings" );
 var Vector2  = require( "vector2" );
+var Voice    = require('ui/voice');
 
 // GLOBAL VARIABLES
 var api           = "https://a.wunderlist.com/api/v1";
 var clientID      = "4d4eece3b87fd2a63a2d";
 var header        = { "X-Access-Token": Settings.option( "token" ), "X-Client-ID": clientID, contentType: "application/json;" };
-var reporting     = "http://jahdaicintron.com/wunderpebbleconfig/report.php";
+var reporting     = "xxx_http://jahdaicintron.com/wunderpebbleconfig/report.php";
 var taskItems     = 0;
 var shares        = [];
 var folders       = {};
@@ -181,6 +183,33 @@ sublistMenu.on( "select", function( e ) {
 	{
 		reportError( "List Selected: " + err.message );
 	}
+});
+
+
+listMenu.on( "longSelect", function( e ) { //add by voice to selected menu
+	console.log( "Adding Task to: " + JSON.stringify (e.item) );
+	
+  // Start a diction session and skip confirmation
+  Voice.dictate('start', true, function(dr) {
+    if (dr.err) {
+      console.log('Error with voice dictation session: ' + dr.err);
+      error.body( 'Error with voice dictation session: ' + dr.err);
+			error.show();
+      return;
+    }
+    console.log( "Transcription Success: " + dr.transcription );
+  	try
+  	{
+  		//addTask(e.item.id, dr.transcription);
+  	}
+  	catch( err )
+  	{
+      if(DEBUG) console.log( "Error Adding Task: " + err );
+  		//reportError( "Task Selected: " + err.message );
+  	}	
+    
+  });
+
 });
 
 taskMenu.on( "select", function( e ) {
@@ -724,13 +753,46 @@ function displayListTasks( tasks, list )
 	return taskSections;
 }
 
+function addTask(id, summary)
+{
+  if(DEBUG) console.log( "Adding task to list "+id+" "+summary );
+  
+  var addData = {
+  list_id: id,
+  title: summary,
+  //"assignee_id": 123,
+  completed: false,
+  //"due_date": "2013-08-30",
+  //"starred": false
+};
+ if(DEBUG) console.log( JSON.stringify( addData ) );
+  
+  ajax(
+	{
+		url:     api + "/tasks",
+		type:    "json",
+		method:  "post",
+		headers: header,
+    data: addData
+	},function( jr )
+    {
+      if(DEBUG) console.log( JSON.stringify( jr ) );
+    },
+	function( err )
+	{
+		if(DEBUG) console.log( "Getting Task Failed: " + JSON.stringify( err ) );
+		//reportError( "Getting Task Notes AJAX: " + JSON.stringify( err ) );
+	}); //end ajax
+  
+}
+
 function getTask( data )
 {
 	if(DEBUG) console.log( "Getting Task" );
 	
 	ajax(
 	{
-		url:     api + "/notes?task_id=" + data.id,
+		url:     api + "/tasks" + data.id,
 		type:    "json",
 		method:  "get",
 		headers: header
