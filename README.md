@@ -1,6 +1,9 @@
 <img src="http://jahdaicintron.com/wp-content/uploads/2015/03/Github.jpg">
 
 WunderPebble is a Wunderlist client for the Pebble Smartwatch. It was written using Pebble.js on CloudPebble and will continue to be developed and updated regularly.
+*
+This is a slightly modified version of WunderPebble, with support for Adding commands by Voice
+*
 
 * **Visit:** The [WunderPebble Website](http://jahdaicintron.com/wunderpebble)
 * **Follow:** On [Twitter](http://twitter.com/jahdaic) for news and updates (#WunderPebble)
