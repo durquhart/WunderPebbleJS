@@ -200,7 +200,7 @@ listMenu.on( "longSelect", function( e ) { //add by voice to selected menu
     console.log( "Transcription Success: " + dr.transcription );
   	try
   	{
-  		//addTask(e.item.id, dr.transcription);
+  		addTask(e.item.id, dr.transcription);
   	}
   	catch( err )
   	{
@@ -773,9 +773,11 @@ function addTask(id, summary)
 		type:    "json",
 		method:  "post",
 		headers: header,
-    data: addData
+    data: addData,
+    cache: false
 	},function( jr )
-    {
+    {//add api call success
+      
       if(DEBUG) console.log( JSON.stringify( jr ) );
     },
 	function( err )
