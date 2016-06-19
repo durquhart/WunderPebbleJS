@@ -358,19 +358,22 @@ function displayLists( lists, sublist )
 					title: "Inbox",
 					icon: "images/inbox.png",
 					id: "inbox",
-					type: "list"
+					type: "list",
+          position: -10
 				},
 				{
 					title: "Today",
 					icon: "images/today.png",
 					id: "today",
-					type: "smartlist"
+					type: "smartlist",
+          position: -9
 				},
 				{
 					title: "Week",
 					icon: "images/week.png",
 					id: "week",
-					type: "smartlist"
+					type: "smartlist",
+          position: -8
 				}
 			];
 		}
